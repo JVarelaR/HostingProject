@@ -1,0 +1,51 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Mis Proyectos
+{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-8">
+    <!-- Encabezado -->
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Lista de Proyectos</h1>
+        <span class="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full uppercase">
+            {{ projects|length }} Proyectos
+        </span>
+    </div>
+
+    <!-- Grid de Proyectos -->
+    <div id="projects-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for project in projects %}
+            <div class="group bg-white border border-slate-200 rounded-xl p-6 shadow-sm hover:shadow-md hover:border-blue-300 transition-all duration-200">
+                <div class="flex justify-between items-start mb-4">
+                    <h2 class="text-xl font-bold text-slate-800 group-hover:text-blue-600 transition-colors">
+                        {{ project.name }}
+                    </h2>
+                    <div class="h-2 w-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
+                </div>
+                
+                <p class="text-slate-600 text-sm leading-relaxed mb-6 line-clamp-2">
+                    {{ project.description }}
+                </p>
+
+                <div class="flex items-center justify-between mt-auto">
+                    <a href="{{ project.url }}" target="_blank" 
+                       class="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-700">
+                        Acceder al sitio
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        {% else %}
+            <!-- Si no hay proyectos-->
+            <div class="col-span-full bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl p-12 text-center">
+                <p class="text-slate-500 font-medium">No hay proyectos disponibles en este momento.</p>
+                <button class="bg-blue-100 rounded-full mt-4 p-1 text-blue-600 font-semibold hover:bg-blue-200">+ Crear primer proyecto</button>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
