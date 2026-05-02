@@ -5,10 +5,14 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    networks:
+      - hosting_net
     depends_on:
       - db
     volumes:
+      - ./app:/app
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./tmp:/app/tmp
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.web.rule=Host(`localhost`)"
@@ -22,14 +26,18 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
+    networks:
+      - hosting_net
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./db-init:/docker-entrypoint-initdb.d
 
   traefik:
     image: traefik:v3.6.11
     container_name: traefik
     command:
       - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
       - "--api.insecure=true"
       - "--entrypoints.web.address=:80"
     ports:
@@ -37,6 +45,13 @@ services:
       - "8080:8080"  # dashboard
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - hosting_net
+
+networks:
+  hosting_net:
+    external: true
+    driver: bridge
 
 volumes:
   postgres_data:

@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block title %}
-    Mis Proyectos
+Mis Proyectos
 {% endblock %}
 
 {% block content %}
@@ -17,35 +17,143 @@
     <!-- Grid de Proyectos -->
     <div id="projects-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {% for project in projects %}
-            <div class="group bg-white border border-slate-200 rounded-xl p-6 shadow-sm hover:shadow-md hover:border-blue-300 transition-all duration-200">
-                <div class="flex justify-between items-start mb-4">
-                    <h2 class="text-xl font-bold text-slate-800 group-hover:text-blue-600 transition-colors">
-                        {{ project.name }}
-                    </h2>
-                    <div class="h-2 w-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
-                </div>
-                
-                <p class="text-slate-600 text-sm leading-relaxed mb-6 line-clamp-2">
-                    {{ project.description }}
-                </p>
+        <div
+            class="group bg-white border border-slate-200 rounded-xl p-6 shadow-sm hover:shadow-md hover:border-blue-300 transition-all duration-200">
+            <div class="flex justify-between items-start mb-4">
+                <h2 class="text-xl font-bold text-slate-800 group-hover:text-blue-600 transition-colors">
+                    {{ project.name }}
+                </h2>
+                <div class="h-2 w-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
+            </div>
 
-                <div class="flex items-center justify-between mt-auto">
-                    <a href="{{ project.url }}" target="_blank" 
-                       class="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-700">
-                        Acceder al sitio
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                        </svg>
-                    </a>
-                </div>
+            <p class="text-slate-600 text-sm leading-relaxed mb-6 line-clamp-2">
+                {{ project.description }}
+            </p>
+
+            <div class="flex items-center justify-between mt-auto">
+                <a href="{{ project.url }}" target="_blank"
+                    class="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-700">
+                    Acceder al sitio
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                </a>
             </div>
+        </div>
         {% else %}
-            <!-- Si no hay proyectos-->
-            <div class="col-span-full bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl p-12 text-center">
-                <p class="text-slate-500 font-medium">No hay proyectos disponibles en este momento.</p>
-                <button class="bg-blue-100 rounded-full mt-4 p-1 text-blue-600 font-semibold hover:bg-blue-200">+ Crear primer proyecto</button>
-            </div>
+        <!-- Si no hay proyectos-->
+        <div class="col-span-full bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl p-12 text-center">
+            <p class="text-slate-500 font-medium">No hay proyectos disponibles en este momento.</p>
+        </div>
         {% endfor %}
+        <div class="col-span-full flex justify-center mt-4">
+            <button id="openProjectDialog"
+                class="bg-blue-100 rounded-full px-6 py-2 text-blue-600 font-semibold hover:bg-blue-200 transition-colors">
+                + Crear proyecto
+            </button>
+        </div>
+
+        <!-- Modal para crear proyecto -->
+        <dialog id="createProjectDialog"
+            class="backdrop:bg-slate-900/50 backdrop:backdrop-blur-sm rounded-2xl shadow-2xl border border-slate-200 p-0 w-full max-w-md">
+            <div class="p-8">
+                <!-- Encabezado -->
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Nuevo Proyecto</h2>
+                        <p class="text-slate-500 text-sm">Configura los detalles de tu entorno.</p>
+                    </div>
+                    <button type="button" id="closeProjectDialog"
+                        class="group h-9 w-9 rounded-full bg-slate-50 flex items-center justify-center hover:bg-red-50 transition-colors">
+                        <svg class="w-5 h-5 text-slate-400 group-hover:text-red-500 transition-colors" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Formulario -->
+                <form id="formularioCrearProyecto" method="POST" action="" class="flex flex-col gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Nombre</label>
+                        <input type="text" name="name" placeholder="Ej: Mi Pagina Web" required
+                            class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Descripción</label>
+                        <textarea name="description" placeholder="¿De qué trata este proyecto?" rows="3"
+                            class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="col-span-2">
+                            <label class="block text-sm font-semibold text-slate-700 mb-1">URL</label>
+                            <input type="text" name="url" placeholder="URL del proyecto en GitHub" required
+                                class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1">Puerto</label>
+                            <input type="number" name="puerto" value="80" min="1" max="65535" required
+                                class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Método de despliegue</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <!-- Opción Dockerfile -->
+                            <label
+                                class="relative flex flex-col p-4 border rounded-xl cursor-pointer focus-within:ring-2 focus-within:ring-blue-500 hover:bg-slate-50 transition-all border-slate-200">
+                                <input type="radio" name="docker_type" value="dockerfile" class="sr-only peer" checked>
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-sm font-bold text-slate-900">Dockerfile</span>
+                                </div>
+                                <p class="text-xs text-slate-500 leading-tight">Ideal para servicios únicos y ligeros.
+                                </p>
+                                <!-- Borde de estado activo -->
+                                <div
+                                    class="absolute inset-0 border-2 border-transparent peer-checked:border-blue-600 rounded-xl pointer-events-none">
+                                </div>
+                            </label>
+
+                            <!-- Opción Docker Compose -->
+                            <label
+                                class="relative flex flex-col p-4 border rounded-xl cursor-pointer focus-within:ring-2 focus-within:ring-blue-500 hover:bg-slate-50 transition-all border-slate-200">
+                                <input type="radio" name="docker_type" value="docker-compose" class="sr-only peer">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-sm font-bold text-slate-900">Compose</span>
+                                </div>
+                                <p class="text-xs text-slate-500 leading-tight">Para múltiples contenedores (DB, Redis,
+                                    etc).</p>
+                                <!-- Borde de estado activo -->
+                                <div
+                                    class="absolute inset-0 border-2 border-transparent peer-checked:border-blue-600 rounded-xl pointer-events-none">
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Enviar -->
+                    <div class="mt-4">
+                        <button type="submit"
+                            class="w-full px-4 py-3 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-lg shadow-blue-200 transition-all flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>
+                            Confirmar y Crear Proyecto
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </dialog>
+
+
     </div>
 </div>
+
+<script src="{{ url_for('static', filename='open_dialog.js') }}"></script>
+<script src="{{ url_for('static', filename='create_project.js') }}"></script>
 {% endblock %}
