@@ -1,4 +1,4 @@
-const dialog = document.getElementById('createProjectDialog');
+export const dialog = document.getElementById('createProjectDialog');
 const openBtn = document.getElementById('openProjectDialog');
 const closeBtn = document.getElementById('closeProjectDialog');
 

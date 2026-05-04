@@ -23,7 +23,10 @@ Mis Proyectos
                 <h2 class="text-xl font-bold text-slate-800 group-hover:text-blue-600 transition-colors">
                     {{ project.name }}
                 </h2>
-                <div class="h-2 w-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
+                <div title="{{ 'Ejecutándose' if project.state == 'running' else 'Detenido' }}"
+                    class="h-3 w-3 rounded-full transition-all duration-300 
+                    {{ 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' if project.state == 'running' else 'bg-slate-300' }}">
+                </div>
             </div>
 
             <p class="text-slate-600 text-sm leading-relaxed mb-6 line-clamp-2">
@@ -146,6 +149,13 @@ Mis Proyectos
                             Confirmar y Crear Proyecto
                         </button>
                     </div>
+                    <div id="loading-indicator"
+                        class="hidden flex items-center justify-center p-4 bg-blue-50 rounded-lg mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                            <span class="text-blue-700 font-medium">Creando proyecto...</span>
+                        </div>
+                    </div>
                 </form>
             </div>
         </dialog>
@@ -154,6 +164,6 @@ Mis Proyectos
     </div>
 </div>
 
-<script src="{{ url_for('static', filename='open_dialog.js') }}"></script>
-<script src="{{ url_for('static', filename='create_project.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='open_dialog.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='create_project.js') }}"></script>
 {% endblock %}

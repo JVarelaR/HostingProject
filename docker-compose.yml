@@ -12,7 +12,7 @@ services:
     volumes:
       - ./app:/app
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./tmp:/app/tmp
+      - ./tmp:/tmp/hosting
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.web.rule=Host(`localhost`)"
