@@ -12,7 +12,7 @@
                 <p class="mt-2 text-slate-500 text-sm">Regístrate para gestionar tus proyectos</p>
             </div>
 
-            <form method="POST" action="/register" class="space-y-5">
+            <form id="register-form" method="POST" action="/register" class="space-y-5">
                 <!-- Nombre de Usuario -->
                 <div>
                     <label for="username" class="block text-sm font-semibold text-slate-700 mb-1">Nombre de usuario</label>
@@ -36,7 +36,7 @@
 
                 <!-- Botón de Registro -->
                 <div class="pt-2">
-                    <button type="submit" 
+                    <button id="register-submit" type="submit" 
                         class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all">
                         Registrarse
                     </button>
@@ -55,4 +55,21 @@
         </div>
     </div>
 </div>
+<script>
+    // Deshabilitar el botón de submit al enviar el formulario para evitar envíos múltiples
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('register-form');
+        const submit = document.getElementById('register-submit');
+
+        if (!form || !submit) {
+            return;
+        }
+
+        form.addEventListener('submit', function () {
+            submit.disabled = true;
+            submit.classList.add('opacity-70', 'cursor-not-allowed');
+            submit.textContent = 'Procesando...';
+        });
+    });
+</script>
 {% endblock %}

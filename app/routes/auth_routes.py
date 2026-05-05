@@ -47,6 +47,7 @@ def register():
     # Insertar datos en la base de datos
     insert_user(username, email)
 
+    flash('Registro exitoso.', 'success')
     return redirect("/projects")
 
 
@@ -74,6 +75,7 @@ def login():
         session["email"] = email
         session["username"] = "username" #TODO Obtener username real del usuario desde la base de datos
 
+        flash('Inicio de sesión exitoso.', 'success')
         return redirect("/projects")
 
     return render_template("login.html")
