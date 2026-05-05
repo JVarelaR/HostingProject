@@ -1,7 +1,8 @@
-from flask import Flask, jsonify, render_template, request, redirect
+from flask import Flask, jsonify, render_template, request, redirect, session
 from flask_cors import CORS
 import docker, os
 from routes.project_routes import projects_bp
+from routes.auth_routes import auth_bp
 
 app = Flask(__name__)
 # TODO Tomar Username del usuario autenticado
@@ -14,6 +15,9 @@ CORS(app,
      methods=["GET", "POST", "OPTIONS", "PUT", "DELETE"])
 
 app.register_blueprint(projects_bp)
+app.register_blueprint(auth_bp)
+
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key')
 
 # Logging para debugging
 import logging
@@ -27,9 +31,9 @@ def log_request():
 
 @app.route('/')
 def home():
-    # TODO Login
-
-    return redirect("http://localhost/projects")
+    if 'username' in session: # Verificar si el usuario está autenticado
+        return redirect('/projects')
+    return redirect('/login')
 
 @app.route('/projects', methods=['GET'])
 def list_projects():
@@ -76,7 +80,7 @@ def list_projects():
         logger.error(f"Error al listar contenedores Docker: {e}")
         proyectos = []
 
-    return render_template('projects.html', projects=proyectos, username=app.config['DEFAULT_USERNAME'])
+    return render_template('projects.html', projects=proyectos, username=session.get('username', 'Invitado'))
 
 if __name__ == '__main__':
     # Mostrar todas las rutas registradas

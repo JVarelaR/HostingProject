@@ -22,18 +22,74 @@
                     <span class="text-xl font-bold tracking-tight">Hosting</span>
                 </div>
 
-                <!-- Usuario arriba a la derecha -->
-                <div class="flex items-center gap-3 border-l border-slate-200 pl-6">
-                    <div class="text-right hidden sm:block">
-                        <p class="text-xs font-bold text-slate-900 uppercase">{{ username }}</p>
+                <!-- Usuario -->
+                <div class="relative ml-6 border-l border-slate-200 pl-6">
+                    <button id="user-menu-button" class="flex items-center gap-3 focus:outline-none group">
+                        <div class="text-right hidden sm:block">
+                            <p
+                                class="text-xs font-bold text-slate-900 uppercase group-hover:text-blue-600 transition-colors">
+                                {{ username }}</p>
+                        </div>
+                        <img class="h-9 w-9 rounded-full border-2 border-transparent group-hover:border-blue-500 transition-all shadow-sm"
+                            src="https://ui-avatars.com/api/?name={{ username }}&background=0D8ABC&color=fff"
+                            alt="User profile">
+                    </button>
+
+                    <!-- Ventana flotante -->
+                    <div id="user-menu"
+                        class="hidden absolute right-0 mt-3 w-48 bg-white rounded-2xl shadow-2xl border border-slate-200 py-2 z-[70] transform origin-top-right transition-all">
+                        <div class="px-4 py-2 border-b border-slate-50 mb-1">
+                            <p class="text-xs text-slate-400 font-semibold">Configuración</p>
+                        </div>
+
+                        <a href="/logout"
+                            class="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors mt-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                            Cerrar Sesión
+                        </a>
                     </div>
-                    <img class="h-8 w-8 rounded-full border border-slate-300" 
-                         src="https://ui-avatars.com/api/?name={{ username }}" 
-                         alt="User profile">
                 </div>
+
             </div>
         </div>
     </nav>
+
+    <!-- Notificaciones Flotantes -->
+    <div id="flash-container" class="fixed top-20 right-5 z-[60] flex flex-col gap-3 w-full max-w-sm">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div
+            class="flash-message transform transition-all duration-500 ease-in-out translate-x-0 opacity-100 rounded-2xl shadow-2xl px-5 py-4 border flex items-center justify-between {% if category == 'success' %}border-green-200 bg-green-50 text-green-800{% else %}border-red-200 bg-red-50 text-red-800{% endif %}">
+            <div class="flex items-center gap-3">
+                {% if category == 'success' %}
+                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                {% else %}
+                <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {% endif %}
+                <span class="text-sm font-semibold">{{ message }}</span>
+            </div>
+            <button onclick="this.parentElement.remove()"
+                class="text-current opacity-50 hover:opacity-100 transition-opacity">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" />
+                    </path>
+                </svg>
+            </button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
 
     <!-- Contenido Principal -->
     <main class="flex-grow">
@@ -54,6 +110,41 @@
         </div>
     </footer>
 
+
+    <!-- Aparición y desaparición de notificaciones -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const messages = document.querySelectorAll('.flash-message');
+            messages.forEach(msg => {
+                setTimeout(() => {
+                    msg.classList.remove('translate-x-full', 'opacity-0');
+                }, 100);
+                setTimeout(() => {
+                    msg.classList.add('translate-x-full', 'opacity-0');
+                    setTimeout(() => msg.remove(), 500);
+                }, 4000); //ms de espera
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const userButton = document.getElementById('user-menu-button');
+            const userMenu = document.getElementById('user-menu');
+
+            // Toggle menú
+            userButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                userMenu.classList.toggle('hidden');
+            });
+
+            // Cerrar si se hace clic fuera
+            window.addEventListener('click', (e) => {
+                if (!userMenu.contains(e.target) && !userButton.contains(e.target)) {
+                    userMenu.classList.add('hidden');
+                }
+            });
+        });
+
+    </script>
 </body>
 
 </html>
