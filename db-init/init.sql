@@ -30,6 +30,9 @@ CREATE TABLE projects (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
 
     nombre TEXT NOT NULL,
+
+    descripcion TEXT NOT NULL,
+    
     repo_url TEXT NOT NULL,
 
     deployment_type deployment_type NOT NULL,
